@@ -183,7 +183,7 @@ mutable struct DPWTree{S,A}
     total_n::Vector{Int}
     children::Vector{Vector{Int}}
     s_labels::Vector{S}
-    s_lookup::Dict{S, Int}
+    s_lookup::Dict{Any, Int}
 
     # for each state-action node
     n::Vector{Int}
@@ -223,7 +223,7 @@ function insert_state_node!(tree::DPWTree{S,A}, s::S, maintain_s_lookup=true) wh
     push!(tree.s_labels, s)
     snode = length(tree.total_n)
     if maintain_s_lookup
-        tree.s_lookup[s] = snode
+        tree.s_lookup[hash(s)] = snode
     end
     return snode
 end

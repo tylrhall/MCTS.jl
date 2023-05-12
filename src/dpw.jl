@@ -30,8 +30,8 @@ function POMDPTools.action_info(p::DPWPlanner, s; tree_in_info=false)
         A = actiontype(p.mdp)
         if p.solver.keep_tree && p.tree != nothing
             tree = p.tree
-            if haskey(tree.s_lookup, s)
-                snode = tree.s_lookup[s]
+            if haskey(tree.s_lookup, hash(s))
+                snode = tree.s_lookup[hash(s)]
             else
                 snode = insert_state_node!(tree, s, true)
             end
@@ -120,8 +120,8 @@ function simulate(dpw::DPWPlanner, snode::Int, d::Int)
     if (dpw.solver.enable_state_pw && tree.n_a_children[sanode] <= sol.k_state*tree.n[sanode]^sol.alpha_state) || tree.n_a_children[sanode] == 0
         sp, r = @gen(:sp, :r)(dpw.mdp, s, a, dpw.rng)
 
-        if sol.check_repeat_state && haskey(tree.s_lookup, sp)
-            spnode = tree.s_lookup[sp]
+        if sol.check_repeat_state && haskey(tree.s_lookup, hash(sp))
+            spnode = tree.s_lookup[hash(sp)]
         else
             spnode = insert_state_node!(tree, sp, sol.keep_tree || sol.check_repeat_state)
             new_node = true
